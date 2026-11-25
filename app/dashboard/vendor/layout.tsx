@@ -9,7 +9,6 @@ import {
   Pizza,
   PlusCircle,
   ClipboardList,
-  Crown,
   Settings,
   LogOut,
   ShieldAlert,
@@ -54,11 +53,49 @@ export default function VendorDashboardLayout({
   const router = useRouter();
   const { data: session, isPending } = useSession();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [planFromDb, setPlanFromDb] = useState<string | null>(null);
 
   const user = session?.user as VendorUser | undefined;
   const role = (user?.role || "customer").toLowerCase();
   const isBlocked = Boolean(user?.isBlocked);
-  const plan = (user?.subscriptionPlan || "free").toLowerCase();
+  const plan = String(
+    planFromDb || user?.subscriptionPlan || "free"
+  ).toLowerCase();
+
+  const backendUrl =
+    process.env.NEXT_PUBLIC_API_URL ||
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    "http://localhost:8000";
+
+  useEffect(() => {
+    if (!user?.id && !user?.email) return;
+
+    const fetchLatestPlan = async () => {
+      try {
+        const params = new URLSearchParams();
+        if (user?.id) params.set("userId", user.id);
+        if (user?.email) params.set("email", user.email);
+
+        const res = await fetch(
+          `${backendUrl}/api/vendor/subscription-status?${params.toString()}`,
+          {
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data?.subscriptionPlan) {
+          setPlanFromDb(String(data.subscriptionPlan).toLowerCase());
+        }
+      } catch {
+        // ignore network error during plan sync
+      }
+    };
+
+    fetchLatestPlan();
+  }, [user?.id, user?.email, backendUrl, pathname]);
 
   useEffect(() => {
     if (isPending) return;
@@ -167,11 +204,6 @@ export default function VendorDashboardLayout({
       title: "Customer Orders",
       href: "/dashboard/vendor/customer-orders",
       icon: ClipboardList,
-    },
-    {
-      title: "Subscription",
-      href: "/dashboard/vendor/subscription",
-      icon: Crown,
     },
     {
       title: "Profile Settings",

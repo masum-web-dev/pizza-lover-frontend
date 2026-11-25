@@ -95,6 +95,7 @@ export default function Navbar() {
             src={user.image}
             alt={displayName}
             fill
+            sizes="40px"
             className="object-cover"
           />
         </div>
@@ -120,6 +121,7 @@ export default function Navbar() {
               src="/Logo.jpg"
               alt="PizzaLovers Logo"
               fill
+              sizes="44px"
               className="object-cover"
               priority
             />
@@ -173,7 +175,6 @@ export default function Navbar() {
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white text-gray-800 shadow-xl border border-orange-200 py-2 z-50">
-                  {/* Top Profile Info */}
                   <div className="flex items-center gap-3 px-4 py-2.5 border-b border-orange-100 bg-[#FFF8EE]/60">
                     {renderUserAvatar("h-10 w-10 text-sm")}
                     <div className="min-w-0 flex-1">
@@ -193,7 +194,6 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {/* Dropdown Links */}
                   <div className="py-1">
                     <Link
                       href="/dashboard"
@@ -265,6 +265,7 @@ export default function Navbar() {
                     src="/Logo.jpg"
                     alt="PizzaLovers Logo"
                     fill
+                    sizes="36px"
                     className="object-cover"
                   />
                 </div>

@@ -62,6 +62,7 @@ export default function AddMenuItemPage() {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
 
+  const [planFromDb, setPlanFromDb] = useState<string | null>(null);
   const [activeItemsCount, setActiveItemsCount] = useState<number>(0);
   const [isCheckingLimit, setIsCheckingLimit] = useState<boolean>(true);
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
@@ -73,10 +74,42 @@ export default function AddMenuItemPage() {
     "http://localhost:8000";
 
   const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "";
-  const plan = (user?.subscriptionPlan || "free").toLowerCase();
+  const plan = String(
+    planFromDb || user?.subscriptionPlan || "free"
+  ).toLowerCase();
   const isFreePlan = plan !== "premium";
   const hasReachedFreeLimit =
     isFreePlan && activeItemsCount >= FREE_PLAN_ACTIVE_LIMIT;
+
+  useEffect(() => {
+    if (!user?.id && !user?.email) return;
+
+    const fetchLatestPlan = async () => {
+      try {
+        const params = new URLSearchParams();
+        if (user?.id) params.set("userId", user.id);
+        if (user?.email) params.set("email", user.email);
+
+        const res = await fetch(
+          `${backendUrl}/api/vendor/subscription-status?${params.toString()}`,
+          {
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data?.subscriptionPlan) {
+          setPlanFromDb(String(data.subscriptionPlan).toLowerCase());
+        }
+      } catch {
+        // ignore network error during plan sync
+      }
+    };
+
+    fetchLatestPlan();
+  }, [user?.id, user?.email, backendUrl]);
 
   useEffect(() => {
     const checkVendorItemsCount = async () => {
@@ -93,6 +126,7 @@ export default function AddMenuItemPage() {
           )}`,
           {
             credentials: "include",
+            cache: "no-store",
           }
         );
 

@@ -9,6 +9,7 @@ import {
   Search,
   AlertCircle,
   X,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,6 +131,45 @@ export default function AdminMenuApprovalsPage() {
       setFeedback({
         type: "error",
         text: "Network error while updating item status.",
+      });
+    } finally {
+      setBusyItemId(null);
+    }
+  };
+
+  const handleDeleteItem = async (item: AdminMenuItem) => {
+    const itemId = getItemId(item);
+
+    try {
+      setBusyItemId(itemId);
+      setFeedback(null);
+
+      const res = await fetch(
+        `${backendUrl}/api/admin/menu-items/${encodeURIComponent(itemId)}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) {
+        setFeedback({
+          type: "error",
+          text: data.message || "Failed to delete menu item.",
+        });
+        return;
+      }
+
+      setItems((prev) => prev.filter((row) => getItemId(row) !== itemId));
+      setFeedback({
+        type: "success",
+        text: `"${getItemTitle(item)}" has been deleted.`,
+      });
+    } catch {
+      setFeedback({
+        type: "error",
+        text: "Network error while deleting menu item.",
       });
     } finally {
       setBusyItemId(null);
@@ -305,7 +345,7 @@ export default function AdminMenuApprovalsPage() {
                   </CardContent>
                 </div>
 
-                <CardContent className="pt-3 border-t border-orange-100 flex items-center justify-end gap-2">
+                <CardContent className="pt-3 border-t border-orange-100 flex flex-wrap items-center justify-end gap-2">
                   {status !== "approved" && (
                     <Button
                       type="button"
@@ -336,6 +376,18 @@ export default function AdminMenuApprovalsPage() {
                       Reject
                     </Button>
                   )}
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    disabled={isBusy}
+                    onClick={() => handleDeleteItem(item)}
+                    className="rounded-full text-red-700 hover:bg-red-50 font-bold px-3 gap-1 cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Delete
+                  </Button>
                 </CardContent>
               </Card>
             );

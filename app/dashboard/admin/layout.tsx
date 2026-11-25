@@ -90,7 +90,7 @@ export default function AdminDashboardLayout({
 
             <div className="pt-4 border-t border-orange-100 space-y-2">
               <Link
-                href="/browse-menu"
+                href="/menu"
                 className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-600 hover:bg-orange-50 hover:text-gray-900"
               >
                 <Store className="h-4 w-4" />

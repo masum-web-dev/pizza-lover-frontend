@@ -306,7 +306,7 @@ export default function VendorOverviewPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-orange-200/80 bg-white shadow-sm">
+        {/* <Card className="rounded-2xl border-orange-200/80 bg-white shadow-sm">
           <CardHeader>
             <CardTitle className="text-base font-extrabold text-gray-900">
               Subscription &amp; Benefits
@@ -325,7 +325,7 @@ export default function VendorOverviewPage() {
               </Button>
             </Link>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

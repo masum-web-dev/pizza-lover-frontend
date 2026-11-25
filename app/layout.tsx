@@ -36,7 +36,12 @@ export default function RootLayout({
       )}
     >
       <body className="bg-[#FFF8EE] text-gray-900">
-        <ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           <Toaster position="top-right" reverseOrder={false} />
           <Navbar />
           <main className="min-h-screen">{children}</main>
