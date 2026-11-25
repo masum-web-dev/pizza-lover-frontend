@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { User, Camera, ShieldCheck, Loader2, Save } from "lucide-react";
 import toast from "react-hot-toast";
-import { useSession, updateUser } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import {
   Card,
   CardContent,
@@ -66,14 +66,41 @@ export default function CustomerProfileSettingsPage() {
     try {
       setIsSaving(true);
 
-      const result = await updateUser({
-        name: trimmedName,
-        image: trimmedImage ? trimmedImage : undefined,
-      });
+      const clientWithUpdate = authClient as unknown as {
+        updateUser?: (payload: {
+          name?: string;
+          image?: string;
+        }) => Promise<{ error?: { message?: string } | null }>;
+      };
 
-      if (result?.error) {
-        toast.error(result.error.message || "Failed to update profile.");
-        return;
+      if (typeof clientWithUpdate.updateUser === "function") {
+        const result = await clientWithUpdate.updateUser({
+          name: trimmedName,
+          image: trimmedImage ? trimmedImage : undefined,
+        });
+
+        if (result?.error) {
+          toast.error(result.error.message || "Failed to update profile.");
+          return;
+        }
+      } else {
+        const res = await fetch("/api/auth/update-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            name: trimmedName,
+            ...(trimmedImage ? { image: trimmedImage } : {}),
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          toast.error(data.message || "Failed to update profile.");
+          return;
+        }
       }
 
       if (refetch) {
