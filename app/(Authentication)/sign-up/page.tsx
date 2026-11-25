@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { apiUrl } from "@/lib/api";
+import toast from "react-hot-toast";
+import { signUp } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,36 +36,29 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(apiUrl("/api/auth/sign-up"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role,
-        }),
-      });
+      const { error } = await signUp.email({
+        name,
+        email,
+        password,
+        role,
+      } as Parameters<typeof signUp.email>[0]);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMsg(data.message || "Could not create account. Please try again.");
+      if (error) {
+        const msg =
+          error.message || "Could not create account. Please try again.";
+        setErrorMsg(msg);
+        toast.error(msg);
         setIsLoading(false);
         return;
       }
 
-      if (data.user) {
-        localStorage.setItem("pizzahub_user", JSON.stringify(data.user));
-        window.dispatchEvent(new Event("pizzahub:auth-changed"));
-      }
-
-      router.push("/sign-in");
+      toast.success("Sign up successfully");
+      router.push("/");
       router.refresh();
     } catch {
-      setErrorMsg("Something went wrong while signing up. Please check backend connection.");
+      const msg = "Something went wrong while signing up.";
+      setErrorMsg(msg);
+      toast.error(msg);
       setIsLoading(false);
     }
   };

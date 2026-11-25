@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { apiUrl } from "@/lib/api";
+import toast from "react-hot-toast";
+import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,34 +34,26 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(apiUrl("/api/auth/sign-in"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const { error } = await signIn.email({
+        email,
+        password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMsg(data.message || "Invalid email or password.");
+      if (error) {
+        const msg = error.message || "Invalid email or password.";
+        setErrorMsg(msg);
+        toast.error(msg);
         setIsLoading(false);
         return;
       }
 
-      if (data.user) {
-        localStorage.setItem("pizzahub_user", JSON.stringify(data.user));
-        window.dispatchEvent(new Event("pizzahub:auth-changed"));
-      }
-
+      toast.success("Sign in successfully");
       router.push("/");
       router.refresh();
     } catch {
-      setErrorMsg("Something went wrong while signing in. Please check backend connection.");
+      const msg = "Something went wrong while signing in.";
+      setErrorMsg(msg);
+      toast.error(msg);
       setIsLoading(false);
     }
   };
