@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { signUp } from "@/lib/auth-client";
+import { apiUrl } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,23 +35,36 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      const { error } = await signUp.email({
-        name,
-        email,
-        password,
-        ...(role ? ({ role } as Record<string, string>) : {}),
+      const res = await fetch(apiUrl("/api/auth/sign-up"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          role,
+        }),
       });
 
-      if (error) {
-        setErrorMsg(error.message || "Could not create account. Please try again.");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMsg(data.message || "Could not create account. Please try again.");
         setIsLoading(false);
         return;
       }
 
-      router.push("/");
+      if (data.user) {
+        localStorage.setItem("pizzahub_user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("pizzahub:auth-changed"));
+      }
+
+      router.push("/sign-in");
       router.refresh();
     } catch {
-      setErrorMsg("Something went wrong while signing up.");
+      setErrorMsg("Something went wrong while signing up. Please check backend connection.");
       setIsLoading(false);
     }
   };
