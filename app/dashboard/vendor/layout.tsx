@@ -62,10 +62,10 @@ export default function VendorDashboardLayout({
     planFromDb || user?.subscriptionPlan || "free"
   ).toLowerCase();
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   useEffect(() => {
     if (!user?.id && !user?.email) return;

@@ -61,10 +61,10 @@ export default function CustomerMyOrdersPage() {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<OrderRecord | null>(null);
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   const getOrderId = (order: OrderRecord) => order._id || order.id || "";
 

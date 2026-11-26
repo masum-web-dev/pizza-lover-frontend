@@ -66,10 +66,10 @@ export default function BrowseMenuPage() {
     "default"
   );
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   useEffect(() => {
     const fetchMenuItems = async () => {

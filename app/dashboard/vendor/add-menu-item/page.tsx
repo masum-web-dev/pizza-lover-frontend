@@ -68,10 +68,10 @@ export default function AddMenuItemPage() {
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "";
   const plan = String(

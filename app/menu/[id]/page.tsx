@@ -74,10 +74,10 @@ export default function MenuItemDetailsPage() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   const role = (user?.role || "customer").toLowerCase();
   const isBlocked = Boolean(user?.isBlocked);

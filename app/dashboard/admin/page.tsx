@@ -34,10 +34,10 @@ export default function AdminOverviewPage() {
   const [menuItems, setMenuItems] = useState<MenuItemSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   const loadOverviewData = useCallback(async () => {
     try {

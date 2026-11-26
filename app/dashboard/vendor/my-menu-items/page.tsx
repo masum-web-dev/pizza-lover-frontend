@@ -78,10 +78,10 @@ export default function MyMenuItemsPage() {
   });
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
-  const backendUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8000";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://pizza-lover-backend.vercel.app";
 
   const fetchMyItems = useCallback(async () => {
     if (!vendorId) {
