@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/app/Global components/Navbar";
 import { cn } from "@/lib/utils";
 import { Toaster } from "react-hot-toast";
+import Footer from "./Global components/Footer";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -35,7 +36,7 @@ export default function RootLayout({
         geist.variable
       )}
     >
-      <body className="bg-[#FFF8EE] text-gray-900">
+      <body className="flex min-h-screen flex-col bg-[#FFF8EE] text-gray-900">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -44,7 +45,8 @@ export default function RootLayout({
         >
           <Toaster position="top-right" reverseOrder={false} />
           <Navbar />
-          <main className="min-h-screen">{children}</main>
+          <main className="flex-1">{children}</main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
